@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaza Relief Fund — Feed Children Today</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E0C09;
+    --surface: #161410;
+    --card: #1E1B16;
+    --border: rgba(255,255,255,0.07);
+    --cream: #F5F0E8;
+    --gold: #D4A853;
+    --gold-dim: rgba(212,168,83,0.15);
+    --red: #C4503A;
+    --red-hover: #A8402C;
+    --green: #3A7D44;
+    --text: #EDE8DF;
+    --muted: rgba(237,232,223,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(212,168,83,0.07), transparent); top: -150px; left: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(196,80,58,0.06), transparent); bottom: 0; right: 0; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    align-items: center;
+    gap: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(212,168,83,0.3);
+    background: rgba(212,168,83,0.06);
+    border-radius: 100px;
+    padding: 7px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero-left h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 5.5vw, 74px);
+    font-weight: 800;
+    line-height: 1.02;
+    color: var(--cream);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-left h1 .accent { color: var(--gold); font-style: italic; }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.85;
+    max-width: 460px;
+    margin-bottom: 44px;
+    font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .stat { background: var(--surface); padding: 20px 24px; }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* DONATION CARD */
+  .donation-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px;
+    position: relative;
+    z-index: 2;
+    animation: fadeUp 0.7s 0.15s ease both;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .donation-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.35;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  .card-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-sub::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* AMOUNT GRID */
+  .amount-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .amount-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 8px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .amount-btn:hover {
+    border-color: rgba(212,168,83,0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    background: rgba(212,168,83,0.06);
+  }
+
+  .amount-btn.featured {
+    border-color: rgba(212,168,83,0.6);
+    background: var(--gold-dim);
+  }
+
+  .amount-btn.featured::after {
+    content: 'Popular';
+    position: absolute;
+    top: 5px; right: 6px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .amount-btn .impact {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .amount-btn.featured .impact { color: rgba(212,168,83,0.65); }
+
+  /* DIVIDER */
+  .or-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .or-divider::before, .or-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* CUSTOM AMOUNT */
+  .custom-wrap { position: relative; margin-bottom: 20px; }
+
+  .custom-symbol {
+    position: absolute;
+    left: 16px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  .custom-input {
+    width: 100%;
+    padding: 13px 16px 13px 34px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .custom-input:focus { border-color: rgba(212,168,83,0.45); }
+  .custom-input::placeholder { color: var(--muted); font-weight: 400; }
+
+  /* DONATE BTN */
+  .donate-main-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--red);
+    color: var(--cream);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  .donate-main-btn:hover {
+    background: var(--red-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(196,80,58,0.35);
+  }
+
+  /* SECURE ROW */
+  .secure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .secure-item { display: flex; align-items: center; gap: 5px; }
+  .secure-item svg { width: 12px; height: 12px; opacity: 0.5; }
+
+  /* TRUST BAR */
+  .trust-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .trust-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+
+  /* IMPACT */
+  .impact-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(34px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.12;
+    color: var(--cream);
+    margin-bottom: 56px;
+    max-width: 560px;
+  }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .ic {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .ic:hover {
+    border-color: rgba(212,168,83,0.2);
+    transform: translateY(-4px);
+  }
+
+  .ic-icon { font-size: 28px; display: block; margin-bottom: 16px; }
+
+  .ic-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+
+  .ic-desc { font-size: 13px; color: var(--muted); line-height: 1.75; }
+
+  .ic-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border: 1px solid rgba(212,168,83,0.2);
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  /* QUOTE */
+  .quote-section {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 40px;
+    text-align: center;
+    background: var(--surface);
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 100px;
+    line-height: 0.6;
+    color: var(--gold);
+    opacity: 0.12;
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3vw, 34px);
+    font-weight: 600;
+    font-style: italic;
+    color: var(--cream);
+    max-width: 680px;
+    margin: 0 auto 20px;
+    line-height: 1.55;
+  }
+
+  .quote-src { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* CTA */
+  .cta-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-inner {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 72px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-inner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 25%; right: 25%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  .cta-inner h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 4vw, 50px);
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+
+  .cta-inner p {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 460px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--red);
+    color: var(--cream);
+    padding: 18px 48px;
+    border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .cta-btn:hover {
+    background: var(--red-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(196,80,58,0.35);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 36px 40px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 2;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer a { color: rgba(237,232,223,0.35); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 48px 24px; gap: 48px; }
+    .impact-grid { grid-template-columns: 1fr; }
+    .trust-bar { gap: 16px; padding: 16px 24px; }
+    .impact-section, .cta-section { padding: 64px 24px; }
+    .cta-inner { padding: 48px 24px; }
+    .amount-grid { grid-template-columns: repeat(2, 1fr); }
+    .quote-section { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="live-badge"><span class="live-dot"></span> Emergency Appeal — Gaza 2024</div>
+    <h1>Every child<br>deserves to<br><span class="accent">eat today.</span></h1>
+    <p class="hero-desc">Over 1.1 million children in Gaza face severe malnutrition. A single donation provides emergency meals, clean water, and medical care — delivered directly to families in need.</p>
+    <div class="stats">
+      <div class="stat"><span class="stat-num">1.1M</span><span class="stat-label">Children in need</span></div>
+      <div class="stat"><span class="stat-num">$10</span><span class="stat-label">Feeds a child</span></div>
+      <div class="stat"><span class="stat-num">96%</span><span class="stat-label">Goes to aid</span></div>
+    </div>
+  </div>
+
+  <!-- DONATION CARD -->
+  <div class="donation-card">
+    <div class="card-title">Make a One-Time Donation</div>
+    <div class="card-sub">100% reaches children in Gaza</div>
+
+    <div class="amount-grid">
+      <!-- ⬇️ Replace STRIPE_LINK_XX with your actual Stripe links -->
+      <a class="amount-btn" href="https://buy.stripe.com/eVqcN71AcfV297m9S25EY00" target="_blank">$10<span class="impact">3 days of meals</span></a>
+      <a class="amount-btn featured" href="https://buy.stripe.com/6oUaEZ2Eg1085Vae8i5EY01" target="_blank">$25<span class="impact">Full nutrition kit</span></a>
+      <a class="amount-btn" href="https://buy.stripe.com/dRmdRb4Mo1085Vaggq5EY02" target="_blank">$50<span class="impact">Water + food pack</span></a>
+      <a class="amount-btn" href="https://buy.stripe.com/fZueVfdiU5go4R67JU5EY03" target="_blank">$100<span class="impact">Family care bundle</span></a>
+      <a class="amount-btn" href="https://buy.stripe.com/28EaEZ5Qs5go6Ze2pA5EY04" target="_blank">$250<span class="impact">Monthly supply</span></a>
+      <a class="amount-btn" href="https://buy.stripe.com/cNi14p4Mo8sAabq9S25EY05" target="_blank">$500<span class="impact">Sponsor a family</span></a>
+    </div>
+
+    <div class="or-divider">or enter your own amount</div>
+
+    <div class="custom-wrap">
+      <span class="custom-symbol">$</span>
+      <input class="custom-input" type="number" id="customAmt" placeholder="Enter amount" min="1">
+    </div>
+
+    <button class="donate-main-btn" onclick="donateCustom()">❤️ &nbsp; Donate Now</button>
+
+    <div class="secure">
+      <div class="secure-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        SSL Secured
+      </div>
+      <div class="secure-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Stripe Secured
+      </div>
+      <div class="secure-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+        Tax Receipt
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="trust-dot"></span>Verified Organization</div>
+  <div class="trust-item"><span class="trust-dot"></span>Stripe Secure Checkout</div>
+  <div class="trust-item"><span class="trust-dot"></span>Google Pay & Apple Pay</div>
+  <div class="trust-item"><span class="trust-dot"></span>12,400+ Donors This Month</div>
+  <div class="trust-item"><span class="trust-dot"></span>Tax Deductible Receipt</div>
+</div>
+
+<!-- IMPACT -->
+<section class="impact-section">
+  <div class="eyebrow">Where Your Money Goes</div>
+  <h2 class="section-title">Every dollar has a direct, measurable impact</h2>
+  <div class="impact-grid">
+    <div class="ic"><span class="ic-icon">🥣</span><div class="ic-title">Emergency Nutrition</div><p class="ic-desc">Ready-to-use therapeutic food and high-nutrition supplements for malnourished children under 5, delivered directly to families.</p><span class="ic-tag">$10 = 3-day supply</span></div>
+    <div class="ic"><span class="ic-icon">💧</span><div class="ic-title">Clean Water</div><p class="ic-desc">Water purification and clean water delivery to communities where infrastructure has been destroyed by conflict.</p><span class="ic-tag">$25 = Water for 5 children</span></div>
+    <div class="ic"><span class="ic-icon">🏥</span><div class="ic-title">Medical Care</div><p class="ic-desc">On-the-ground doctors treating children for malnutrition, infections, and injuries with urgently needed medicines.</p><span class="ic-tag">$100 = 1 child treated</span></div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <span class="quote-mark">"</span>
+  <p class="quote-text">These children didn't choose this. They need our help right now — not tomorrow. Today.</p>
+  <div class="quote-src">— Aid Worker, Northern Gaza, 2024</div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Don't let another child go<br>to bed hungry tonight</h2>
+    <p>A small act of generosity from you means a warm meal, clean water, and hope for a child who has nothing.</p>
+    <a href="https://buy.stripe.com/6oUaEZ2Eg1085Vae8i5EY01" target="_blank" class="cta-btn">❤️ &nbsp; Donate Now — Takes 60 Seconds</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2024 Gaza Relief Fund · <a href="#">Privacy Policy</a> · <a href="#">Terms</a> · <a href="#">Contact</a></p>
+  <p>Registered Nonprofit · All donations are tax deductible · Powered by Stripe</p>
+</footer>
+
+<script>
+  // Custom amount → calls backend which creates Stripe Checkout session
+  async function donateCustom() {
+    const amt = document.getElementById('customAmt').value;
+    if (!amt || parseFloat(amt) < 1) {
+      alert('Please enter a valid amount (minimum $1).');
+      return;
+    }
+
+    const btn = document.querySelector('.donate-main-btn');
+    btn.textContent = 'Redirecting...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch('/api/donate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: parseFloat(amt) })
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Something went wrong');
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+      btn.textContent = '❤️  Donate Now';
+      btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
