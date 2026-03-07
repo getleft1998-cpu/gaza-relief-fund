@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You — Gaza Relief Fund</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0E0C09;
+    color: #EDE8DF;
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+  }
+  .card {
+    background: #1E1B16;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 28px;
+    padding: 64px 48px;
+    max-width: 520px;
+    width: 100%;
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 25%; right: 25%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #D4A853, transparent);
+    opacity: 0.4;
+  }
+  .check {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, #3A7D44, #4ade80);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 28px;
+    animation: pop 0.5s ease;
+  }
+  @keyframes pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: #F5F0E8;
+    margin-bottom: 16px;
+  }
+  p {
+    font-size: 16px;
+    color: rgba(237,232,223,0.55);
+    line-height: 1.8;
+    margin-bottom: 36px;
+  }
+  .back-btn {
+    display: inline-block;
+    background: #D4A853;
+    color: #0E0C09;
+    padding: 14px 36px;
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: #E0B85E; transform: translateY(-1px); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="check">✓</div>
+    <h1>Thank You!</h1>
+    <p>Your donation has been received and will directly help starving children in Gaza. A receipt has been sent to your email. May God bless you. 🙏</p>
+    <a href="/" class="back-btn">← Back to Home</a>
+  </div>
+</body>
+</html>
