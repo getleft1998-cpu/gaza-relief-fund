@@ -1,18 +1,12 @@
 const Stripe = require('stripe');
 
 module.exports = async (req, res) => {
-  // Allow requests from any origin
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -22,25 +16,28 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Invalid amount' });
     }
 
-    // Create a Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'paypal', 'link'],
+      currency: 'usd',
       line_items: [
         {
           price_data: {
             currency: 'usd',
             product_data: {
               name: 'Donation for Gaza Children',
-              description: 'Your donation provides emergency food, clean water, and medical care to starving children in Gaza. 100% of your gift reaches children in need.',
+              description: 'Your donation provides emergency food, clean water, and medical care to starving children in Gaza. 100% of your gift reaches children in need. Thank you for your kindness.',
+              images: ['https://gaza-relief-fund.vercel.app/children.png'],
             },
-            unit_amount: Math.round(amount * 100), // Convert to cents
+            unit_amount: Math.round(amount * 100),
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
+      currency: 'usd',
       success_url: `${req.headers.origin}/success.html`,
       cancel_url: `${req.headers.origin}/`,
+      locale: 'auto',
     });
 
     res.status(200).json({ url: session.url });
