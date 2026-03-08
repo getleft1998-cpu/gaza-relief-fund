@@ -1415,11 +1415,11 @@
     document.getElementById('btn-text').textContent = t.btnText;
   }
 
-  // Auto-select $25 on load
+  // Auto-select $25 on load — exact match only
   window.addEventListener('load', () => {
-    document.getElementById('customAmt').value = 25;
+    document.getElementById("customAmt").value = "";
     document.querySelectorAll('.amount-btn').forEach(btn => {
-      if (btn.textContent.startsWith('$25')) btn.classList.add('selected');
+      const m = btn.getAttribute('onclick')?.match(/selectAmount\((\d+)\)/); if (m && m[1] === '25') btn.classList.add('selected');
     });
     document.getElementById('btn-text').textContent = (translations[currentLang]?.btnText || 'Donate Now') + ' $25';
   });
