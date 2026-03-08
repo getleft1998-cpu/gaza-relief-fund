@@ -675,6 +675,16 @@
     .progress-card { padding: 24px 20px; }
   }
 
+
+  .amount-btn.selected {
+    background: linear-gradient(135deg, var(--green-btn), var(--green-bright)) !important;
+    border-color: var(--green-bright) !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(39,107,51,0.4) !important;
+  }
+  .amount-btn.selected .impact { color: rgba(255,255,255,0.8) !important; }
+
 </style>
 </head>
 <body>
@@ -705,19 +715,19 @@
     <div class="card-sub"><span class="dot"></span><span id="card-sub">100% reaches children in Gaza</span></div>
 
     <div class="amount-grid">
-      <a class="amount-btn" href="https://buy.stripe.com/eVqcN71AcfV297m9S25EY00" target="_blank">$10<span class="impact" id="imp-10">3 days of meals</span></a>
-      <a class="amount-btn featured" href="https://buy.stripe.com/6oUaEZ2Eg1085Vae8i5EY01" target="_blank" data-popular="Popular">$25<span class="impact" id="imp-25">Full nutrition kit</span></a>
-      <a class="amount-btn" href="https://buy.stripe.com/dRmdRb4Mo1085Vaggq5EY02" target="_blank">$50<span class="impact" id="imp-50">Water + food pack</span></a>
-      <a class="amount-btn" href="https://buy.stripe.com/fZueVfdiU5go4R67JU5EY03" target="_blank">$100<span class="impact" id="imp-100">Family care bundle</span></a>
-      <a class="amount-btn" href="https://buy.stripe.com/28EaEZ5Qs5go6Ze2pA5EY04" target="_blank">$250<span class="impact" id="imp-250">Monthly supply</span></a>
-      <a class="amount-btn" href="https://buy.stripe.com/cNi14p4Mo8sAabq9S25EY05" target="_blank">$500<span class="impact" id="imp-500">Sponsor a family</span></a>
+      <button class="amount-btn" onclick="selectAmount(10)">$10<span class="impact" id="imp-10">3 days of meals</span></button>
+      <button class="amount-btn featured" onclick="selectAmount(25)" data-popular="Popular">$25<span class="impact" id="imp-25">Full nutrition kit</span></button>
+      <button class="amount-btn" onclick="selectAmount(50)">$50<span class="impact" id="imp-50">Water + food pack</span></button>
+      <button class="amount-btn" onclick="selectAmount(100)">$100<span class="impact" id="imp-100">Family care bundle</span></button>
+      <button class="amount-btn" onclick="selectAmount(250)">$250<span class="impact" id="imp-250">Monthly supply</span></button>
+      <button class="amount-btn" onclick="selectAmount(500)">$500<span class="impact" id="imp-500">Sponsor a family</span></button>
     </div>
 
     <div class="or-line"><span id="or-text">or enter your own amount</span></div>
 
     <div class="custom-wrap">
       <span class="custom-sym">$</span>
-      <input class="custom-input" type="number" id="customAmt" placeholder="Enter amount" min="1">
+      <input class="custom-input" type="number" id="customAmt" placeholder="Enter amount" min="1" oninput="clearSelection()">
     </div>
 
     <button class="donate-btn" id="donateBtn" onclick="donateCustom()">❤️ &nbsp;<span id="btn-text">Donate Now</span></button>
@@ -1160,31 +1170,51 @@
 
   // AUTO-DETECT browser language on load
   function autoDetect() {
-    const browserLang = navigator.language || navigator.userLanguage || 'en';
+    const browserLang = navigator.language || navigator.userLanguage || 'ar';
     const code = browserLang.toLowerCase().substring(0, 2);
     const supported = ['en', 'ar', 'fr', 'de'];
-    const detected = supported.includes(code) ? code : 'en';
+    // Default to Arabic for Gulf targeting — fallback to browser language
+    const detected = supported.includes(code) ? code : 'ar';
     setLang(detected);
   }
 
   autoDetect();
 
   // DONATE custom amount
+  // Stripe Payment Links for fixed amounts
+  const stripeLinks = {
+    10:  'https://buy.stripe.com/eVqcN71AcfV297m9S25EY00',
+    25:  'https://buy.stripe.com/6oUaEZ2Eg1085Vae8i5EY01',
+    50:  'https://buy.stripe.com/dRmdRb4Mo1085Vaggq5EY02',
+    100: 'https://buy.stripe.com/fZueVfdiU5go4R67JU5EY03',
+    250: 'https://buy.stripe.com/28EaEZ5Qs5go6Ze2pA5EY04',
+    500: 'https://buy.stripe.com/cNi14p4Mo8sAabq9S25EY05',
+  };
+
   async function donateCustom() {
-    const amt = document.getElementById('customAmt').value;
+    const amt = parseFloat(document.getElementById('customAmt').value);
     const t = translations[currentLang];
-    if (!amt || parseFloat(amt) < 1) {
+    if (!amt || amt < 1) {
       alert(t.alertMsg);
       return;
     }
+
     const btn = document.getElementById('donateBtn');
-    document.getElementById('btn-text').textContent = t.redirecting;
+    document.getElementById('btn-text').textContent = t.redirecting || 'Redirecting...';
     btn.disabled = true;
+
+    // If fixed amount has a direct Stripe link — use it directly
+    if (stripeLinks[amt]) {
+      window.location.href = stripeLinks[amt];
+      return;
+    }
+
+    // Otherwise use backend API for custom amounts
     try {
       const response = await fetch('/api/donate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: parseFloat(amt) })
+        body: JSON.stringify({ amount: amt })
       });
       const data = await response.json();
       if (data.url) {
@@ -1193,8 +1223,10 @@
         throw new Error(data.error || 'Error');
       }
     } catch (error) {
-      alert('Error: ' + error.message);
-      document.getElementById('btn-text').textContent = t.btnText;
+      // Fallback to $25 Stripe link if API fails
+      window.location.href = stripeLinks[25];
+    } finally {
+      document.getElementById('btn-text').textContent = t.btnText || 'Donate Now';
       btn.disabled = false;
     }
   }
@@ -1357,6 +1389,40 @@
       }, 2000);
     });
   }
+
+
+  // ── UNIFIED AMOUNT SELECTION ──
+  let selectedAmount = 25; // default
+
+  function selectAmount(amount) {
+    selectedAmount = amount;
+    // Update input field
+    document.getElementById('customAmt').value = amount;
+    // Highlight selected button
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+      btn.classList.remove('selected');
+    });
+    event.currentTarget.classList.add('selected');
+    // Update donate button text
+    const t = translations[currentLang];
+    document.getElementById('btn-text').textContent = t.btnText + ' $' + amount;
+  }
+
+  function clearSelection() {
+    selectedAmount = null;
+    document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('selected'));
+    const t = translations[currentLang];
+    document.getElementById('btn-text').textContent = t.btnText;
+  }
+
+  // Auto-select $25 on load
+  window.addEventListener('load', () => {
+    document.getElementById('customAmt').value = 25;
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+      if (btn.textContent.startsWith('$25')) btn.classList.add('selected');
+    });
+    document.getElementById('btn-text').textContent = (translations[currentLang]?.btnText || 'Donate Now') + ' $25';
+  });
 
 </script>
 </body>
